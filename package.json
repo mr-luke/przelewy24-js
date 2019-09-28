@@ -1,0 +1,35 @@
+{
+  "name": "przelewy24",
+  "version": "1.0.0",
+  "author": "Lukasz Sitnicki <lukasz.sitnicki@gmail.com>",
+  "description": "Universal Przelewy24 driver for JS applications.",
+  "keywords": [
+    "driver",
+    "przelewy24",
+    "payment"
+  ],
+  "license": "MIT",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "cover": "istanbul cover node_modules/mocha/bin/_mocha test/*.js - - -R spec",
+    "lint": "tslint --project \"./tsconfig.json\"",
+    "test": "mocha --reporter spec"
+  },
+  "dependencies": {
+    "axios": "^0.19.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.2.3",
+    "@types/istanbul": "^0.4.30",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.7.8",
+    "chai": "^4.2.0",
+    "coveralls": "^3.0.6",
+    "istanbul": "^0.4.5",
+    "mocha": "^6.2.0",
+    "tslint": "^5.20.0",
+    "typescript": "^3.6.3"
+  }
+}

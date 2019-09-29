@@ -4,6 +4,15 @@ export class Model {
   private data: Payload = {}
 
   /**
+   * Set data on constructing.
+   */
+  constructor (dataSet: Payload = {}) {
+    if (Object.keys(dataSet).length) {
+      this.setMany(dataSet)
+    }
+  }
+
+  /**
    * Dump all values to object.
    */
   dump (): Payload {
@@ -22,8 +31,8 @@ export class Model {
    * Set multiple values as once.
    */
   setMany (dataSet: Payload): this {
-    for (const [value, index] of Object.entries(dataSet)) {
-      this.set(index, value)
+    for (const [key, value] of Object.entries(dataSet)) {
+      this.set(key, value)
     }
 
     return this

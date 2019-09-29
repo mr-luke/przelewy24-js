@@ -3,7 +3,7 @@ import { Model } from '../model'
 import { Target } from '../types/target'
 
 describe('Hashing 3 different targets', () => {
-  test('Register transaction signature - possitive', () => {
+  test('Register transaction signature', () => {
     const hasher = new Hasher()
 
     const data = (new Model()).set('p24_session_id', 'abcdefghijk')
@@ -16,7 +16,7 @@ describe('Hashing 3 different targets', () => {
     ).toEqual('6c7f0bb62c046fbc89921dc3b2b23ede')
   })
 
-  test('Test connection signature - possitive', () => {
+  test('Test connection signature', () => {
     const hasher = new Hasher()
 
     const data = (new Model()).set('p24_pos_id', '9999')
@@ -26,7 +26,7 @@ describe('Hashing 3 different targets', () => {
     ).toEqual('55a2740da39c91012a4fb0bb78149a4e')
   })
 
-  test('Verify order signature - possitive', () => {
+  test('Verify order signature', () => {
     const hasher = new Hasher()
 
     const data = (new Model()).set('p24_session_id', 'abcdefghijk')

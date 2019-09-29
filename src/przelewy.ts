@@ -48,8 +48,8 @@ export default class Przelewy24 implements Contract {
       .set('p24_url_return', callbacks.returnUri)
       .set('p24_url_status', callbacks.statusUri)
 
-    for (const [value, index] of Object.entries(transaction)) {
-      payload.set(index, value)
+    for (const [key, value] of Object.entries(transaction)) {
+      payload.set(key, value)
     }
 
     payload.set('p24_sign', this.hasher.getSignature(payload, Target.register, this.salt))
@@ -95,9 +95,26 @@ export default class Przelewy24 implements Contract {
    * Verify transaction in P24 system.
    */
   async verify (p24Response: Verification): Promise<Response> {
-    // const target = this.version.getTarget(Target.verify)
-    //
-    // const payload = (new Model).setMany(p24Response)
+    const target = this.version.getTarget(Target.register)
+
+    delete p24Response.p24_method
+    delete p24Response.p24_statement
+    delete p24Response.p24_sign
+
+    const payload = (new Model).setMany(this.data)
+    payload.set('p24_sign', this.hasher.getSignature(payload, Target.verify, this.salt))
+
+    const response = await this.makeCall(payload, target)
+
+    if (!response.success) {
+      // Throw in case of fail to move execution to catch block
+      // of Promis callbacks.
+      throw response
+    }
+
+    return {
+      status: Status.Success
+    }
   }
 
   /**

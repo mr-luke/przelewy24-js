@@ -6,7 +6,7 @@ export class Model {
   /**
    * Set data on constructing.
    */
-  constructor (dataSet: Payload = {}) {
+  constructor(dataSet: Payload = {}) {
     if (Object.keys(dataSet).length) {
       this.setMany(dataSet)
     }
@@ -15,14 +15,14 @@ export class Model {
   /**
    * Dump all values to object.
    */
-  dump (): Payload {
+  public dump(): Payload {
     return this.data
   }
 
   /**
    * Set value of payload.
    */
-  set (name: string, value: string|number): this {
+  public set(name: string, value: string|number): this {
     this.data[name] = value
     return this
   }
@@ -30,7 +30,7 @@ export class Model {
   /**
    * Set multiple values as once.
    */
-  setMany (dataSet: Payload): this {
+  public setMany(dataSet: Payload): this {
     for (const [key, value] of Object.entries(dataSet)) {
       this.set(key, value)
     }

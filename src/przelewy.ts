@@ -1,15 +1,12 @@
-import axios from 'axios'
-import { AxiosInstance } from 'axios'
-
 import { Config } from './interfaces/config'
-import Contract from './interfaces/przelewy'
-import { Callbacks, Response, ResponseHttp, Transaction, Verification } from './interfaces/models'
+import { Przelewy as Contract, Version } from './interfaces/przelewy'
+import { Http, HttpResponse } from './interfaces/http'
+import { Callbacks, Response, Transaction, Verification } from './interfaces/models'
 import Hasher from './interfaces/hasher'
 import { Model } from './model'
 import { Payload } from './interfaces/models'
 import { Status } from './types/status'
 import { Target } from './types/target'
-import Version from './interfaces/version'
 
 /**
  * Przelewy24 driver.
@@ -19,20 +16,21 @@ import Version from './interfaces/version'
  * @licence   MIT
  */
 export default class Przelewy24 implements Contract {
-  data: Payload
-  live: boolean
-  version: Version
-  salt: string
-  http: AxiosInstance
-  hasher: Hasher
+  public live: boolean
 
-  constructor (config: Config, version: Version, hasher: Hasher) {
+  protected data: Payload
+  protected version: Version
+  protected salt: string
+  protected http: Http
+  protected hasher: Hasher
+
+  constructor(config: Config, version: Version, http: Http, hasher: Hasher) {
     this.data = {}
 
     this.live = config.live
     this.version = version
     this.salt = config.salt
-    this.http = axios.create()
+    this.http = http
     this.hasher = hasher
 
     this.setBaseConfig(config)
@@ -41,10 +39,10 @@ export default class Przelewy24 implements Contract {
   /**
    * Register new payment in P24.
    */
-  async register (transaction: Transaction, callbacks: Callbacks): Promise<Response> {
-    const target = this.version.getTarget(Target.register)
+  public async register(transaction: Transaction, callbacks: Callbacks): Promise<Response> {
+    const target = this.version.getTarget(Target.register, this.live)
 
-    const payload = (new Model).setMany(this.data)
+    const payload = (new Model()).setMany(this.data)
       .set('p24_url_return', callbacks.returnUri)
       .set('p24_url_status', callbacks.statusUri)
 
@@ -64,15 +62,15 @@ export default class Przelewy24 implements Contract {
 
     return {
       status: Status.Success,
-      redirect: `${this.version.getTarget(Target.request)}/${registered.data.token}`
+      redirect: `${this.version.getTarget(Target.request, this.live)}/${registered.data.token}`
     }
   }
 
   /**
    * Test connection to P24.
    */
-  async test (): Promise<Response> {
-    const target = this.version.getTarget(Target.test)
+  public async test(): Promise<Response> {
+    const target = this.version.getTarget(Target.test, this.live)
 
     const payload = (new Model()).set('p24_merchant_id', this.data.p24_merchant_id)
       .set('p24_pos_id', this.data.p24_pos_id)
@@ -94,14 +92,14 @@ export default class Przelewy24 implements Contract {
   /**
    * Verify transaction in P24 system.
    */
-  async verify (p24Response: Verification): Promise<Response> {
-    const target = this.version.getTarget(Target.register)
+  public async verify(p24Response: Verification): Promise<Response> {
+    const target = this.version.getTarget(Target.register, this.live)
 
     delete p24Response.p24_method
     delete p24Response.p24_statement
     delete p24Response.p24_sign
 
-    const payload = (new Model).setMany(this.data)
+    const payload = (new Model()).setMany(this.data)
     payload.set('p24_sign', this.hasher.getSignature(payload, Target.verify, this.salt))
 
     const response = await this.makeCall(payload, target)
@@ -120,37 +118,14 @@ export default class Przelewy24 implements Contract {
   /**
    * Make call to P24 api.
    */
-  private async makeCall (payload: Model, target: string): Promise<ResponseHttp> {
+  private async makeCall(payload: Model, target: string): Promise<HttpResponse> {
     return this.http.request({ method: 'POST', url: target, data: payload })
-      .then(response => {
-        const data = this.parseResponse(response.data)
-
-        return {
-          status: response.status,
-          success: data === '0',
-          data: data
-        }
-      })
-      .catch(error => {
-        return { status: error.response.status, success: false }
-      })
-  }
-
-  /**
-   * Parse response string to Object
-   */
-  private parseResponse (string: string) {
-    return string.split('&').reduce((params: Payload, param) => {
-      const [key, value] = param.split('=')
-      params[key] = value ? decodeURIComponent(value.replace(/\+/g, ' ')) : ''
-      return params
-    }, {})
   }
 
   /**
    * Sets base configuration to P24 params.
    */
-  private setBaseConfig (config: Config): void {
+  private setBaseConfig(config: Config): void {
     this.data.p24_merchant_id = config.merchant
 
     if (Object.prototype.hasOwnProperty.call(config, 'pos') && config.pos !== null) {

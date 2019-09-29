@@ -44,15 +44,6 @@ export interface Response {
 }
 
 /**
- * ResponseHttp structure interface.
- */
-export interface ResponseHttp {
-  status: number
-  success: boolean
-  data?: any
-}
-
-/**
  * New transaction interface.
  */
 export interface Transaction {
@@ -71,7 +62,7 @@ export interface Transaction {
   channel?: number
   shipping?: number
   transferLabel?: string
-  items: Array<Item>
+  items: Item[]
 }
 
 /**

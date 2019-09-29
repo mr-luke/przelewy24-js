@@ -9,10 +9,8 @@ import { Target } from '../types/target'
  * @licence   MIT
  */
 export default interface Hasher {
-  definitions: {[key: string]: Array<string>}
-
   /**
    * Create signature based on payload and target.
    */
-  getSignature (payload: Model, target: Target, salt: string): string
+  getSignature(payload: Model, target: Target, salt: string): string
 }

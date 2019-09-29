@@ -1,37 +1,45 @@
-import { AxiosInstance } from 'axios'
-
 import { Callbacks, Response, Transaction, Verification } from './models'
-import Hasher from './hasher'
-import { Payload } from './models'
-import Version from './version'
+import { Target } from '../types/target'
 
 /**
- * Przelewy24 driver interface.
+ * Przelewy24 main interfaces.
  *
  * @author    Łukasz Sitnicki <lukasz.sitnicki@movecloser.pl>
  * @version   1.0.0
  * @licence   MIT
  */
-export default interface Przelewy {
-  data: Payload
-  version: Version
+export interface Przelewy {
   live: boolean
-  salt: string
-  http: AxiosInstance
-  hasher: Hasher
 
   /**
    * Register new payment in P24.
    */
-  register (transaction: Transaction, callbacks: Callbacks): Promise<Response>
+  register(transaction: Transaction, callbacks: Callbacks): Promise<Response>
 
   /**
    * Test connection to P24.
    */
-  test (): Promise<Response>
+  test(): Promise<Response>
 
   /**
    * Verify transaction in P24 system.
    */
-  verify (payload: Verification): Promise<Response>
+  verify(payload: Verification): Promise<Response>
+}
+
+export interface Version {
+  /**
+   * Return valid endpoint for given target.
+   */
+  getTarget(target: Target, isLive: boolean): string
+
+  /**
+   * Returns api version.
+   */
+  getVersion(): string
+
+  /**
+   * Returns valid P24 base Uri due to mode.
+   */
+  getUri(isLive: boolean): string
 }

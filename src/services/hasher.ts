@@ -1,6 +1,6 @@
 import * as md5 from 'md5'
 
-import * as signatures from '../../config/signature.json'
+import * as signatures from '../signature.json'
 
 import { Model } from '../model'
 import HasherContract from '../interfaces/hasher'

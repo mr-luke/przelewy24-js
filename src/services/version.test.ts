@@ -34,7 +34,7 @@ describe('Api Version structure', () => {
     const version = new Version()
 
     expect(
-      version.getTarget(Target.verify, false)
+      version.getTarget(Target.verify)
     ).toEqual('https://sandbox.przelewy24.pl/trnVerify')
   })
 })

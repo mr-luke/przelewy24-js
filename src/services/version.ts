@@ -37,6 +37,7 @@ export default class Version implements Contract {
   /**
    * Returns api version.
    */
+  /* istanbul ignore next */
   public getVersion(): string {
     return this.version
   }

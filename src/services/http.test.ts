@@ -8,7 +8,7 @@ describe('Http service tests', () => {
   test('Check if success http call respond correctly', () => {
     mocked.request.mockResolvedValue({
       status: 200,
-      data: 'error=0&param1=test&param2=ok'
+      data: 'error=0&param1=test&param2='
     });
 
     Http.request({method: 'POST', url: 'test', data: 'test'}).then(response => {
@@ -18,7 +18,7 @@ describe('Http service tests', () => {
         data: {
           error: '0',
           param1: 'test',
-          param2: 'ok'
+          param2: ''
         }
       })
     })

@@ -16,6 +16,7 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
+    "coverage": "jest --config jestconfig.json --coverage",
     "lint": "tslint --project \"./tsconfig.json\"",
     "test": "jest --config jestconfig.json",
     "prepublishOnly": "npm test && npm run lint",

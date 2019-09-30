@@ -19,13 +19,15 @@
     "coverage": "jest --config jestconfig.json --coverage",
     "lint": "tslint --project \"./tsconfig.json\"",
     "test": "jest --config jestconfig.json",
+    "test-live": "jest --config jestconfig.live.json --passWithNoTests",
     "prepublishOnly": "npm test && npm run lint",
     "prepare": "npm run build"
   },
   "dependencies": {
     "@types/md5": "^2.1.33",
     "axios": "^0.19.0",
-    "md5": "^2.2.1"
+    "md5": "^2.2.1",
+    "querystring": "^0.2.0"
   },
   "devDependencies": {
     "@types/jest": "^24.0.18",

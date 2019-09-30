@@ -129,7 +129,7 @@ export default class Przelewy24 implements Contract {
    * Make call to P24 api.
    */
   private async makeCall(payload: Model, target: string): Promise<HttpResponse> {
-    return this.http.request({ method: 'POST', url: target, data: payload })
+    return this.http.request({ url: target, data: payload })
   }
 
   /**

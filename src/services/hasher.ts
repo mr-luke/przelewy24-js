@@ -27,7 +27,7 @@ export default class Hasher implements HasherContract {
   public getSignature(payload: Model, target: Target, salt: string): string {
     return md5(
       this.composeString(
-        payload.dump(),
+        payload.dataSet,
         this.definitions[target],
         salt
       )

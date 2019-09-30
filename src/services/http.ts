@@ -15,7 +15,12 @@ export default class Http {
    * Make request to external api via axios driver.
    */
   public static async request(config: HttpRequest): Promise<HttpResponse> {
-    return axios.request(config)
+    return axios.request({
+      method: 'POST',
+      url: config.url,
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      data: config.data.dump()
+    })
       .then(response => {
         const data: Payload = Http.parseResponse(response.data)
 

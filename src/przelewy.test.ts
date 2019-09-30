@@ -1,4 +1,3 @@
-import axios from 'axios'
 import przelewyFactory from './index'
 import { Callbacks, Transaction, Verification } from './interfaces/models'
 import { Currency } from './types/currency'
@@ -7,21 +6,17 @@ import { Model } from './model'
 import { Transaction as Adapter } from './adapters'
 import Version from './services/version'
 
-jest.mock('axios')
-const mocked = axios as jest.Mocked<typeof axios>
+jest.mock('./services/http')
+const mocked = Http as jest.Mocked<typeof Http>
 
 describe('Przelewy24 autconfig', () => {
-  const przelewy = przelewyFactory(
-    {
-      live: true,
-      merchant: 9999,
-      currency: 'PLN',
-      country: 'PL',
-      salt: 'a123b456c789d012'
-    },
-    Http,
-    new Version()
-  )
+  const przelewy = przelewyFactory({
+    live: true,
+    merchant: 9999,
+    currency: 'PLN',
+    country: 'PL',
+    salt: 'a123b456c789d012'
+  })
 
   test('Check live value', () => {
     expect(przelewy.live).toBe(true)
@@ -29,14 +24,18 @@ describe('Przelewy24 autconfig', () => {
 })
 
 describe('Przelewy24 main driver', () => {
-  const przelewy = przelewyFactory({
-    live: false,
-    merchant: 9999,
-    pos: 9999,
-    currency: 'PLN',
-    country: 'PL',
-    salt: 'a123b456c789d012'
-  })
+  const przelewy = przelewyFactory(
+    {
+      live: false,
+      merchant: 9999,
+      pos: 9999,
+      currency: 'PLN',
+      country: 'PL',
+      salt: 'a123b456c789d012'
+    },
+    mocked,
+    new Version()
+  )
 
   const callbacks: Callbacks = {
     returnUri: 'https://return.pl',
@@ -70,10 +69,7 @@ describe('Przelewy24 main driver', () => {
   }
 
   test('Check if test connection respond correctly', async () => {
-    mocked.request.mockResolvedValue({
-      status: 200,
-      data: 'error=0'
-    })
+    mocked.request.mockResolvedValue({ status: 200, success: true })
 
     const expectedPayload: Model =  new Model({
       p24_merchant_id: 9999,
@@ -84,7 +80,6 @@ describe('Przelewy24 main driver', () => {
     const response = await przelewy.test()
 
     expect(mocked.request).toBeCalledWith({
-      method: 'POST',
       url: 'https://sandbox.przelewy24.pl/testConnection',
       data: expectedPayload
     })
@@ -95,10 +90,11 @@ describe('Przelewy24 main driver', () => {
   })
 
   test('Check if test connection caught errors', () => {
-    mocked.request.mockRejectedValue({
-      response: {
-        status: 400,
-        data: 'error=err1&errorMessage=Bad+request'
+    mocked.request.mockResolvedValue({
+      status: 400,
+      success: false,
+      data: {
+        error: 'err1'
       }
     })
 
@@ -108,8 +104,7 @@ describe('Przelewy24 main driver', () => {
         status: 400,
         success: false,
         data: {
-          error: 'err1',
-          errorMessage: 'Bad request'
+          error: 'err1'
         }
       }
     })
@@ -118,7 +113,11 @@ describe('Przelewy24 main driver', () => {
   test('Check if register respond correctly', async () => {
     mocked.request.mockResolvedValue({
       status: 200,
-      data: 'error=0&token=1234'
+      success: true,
+      data: {
+        error: 0,
+        token: 1234
+      }
     })
 
     const expectedPayload: Model =  new Model({
@@ -137,7 +136,6 @@ describe('Przelewy24 main driver', () => {
     const response = await przelewy.register(transaction, callbacks)
 
     expect(mocked.request).toBeCalledWith({
-      method: 'POST',
       url: 'https://sandbox.przelewy24.pl/trnRegister',
       data: expectedPayload
     })
@@ -149,10 +147,11 @@ describe('Przelewy24 main driver', () => {
   })
 
   test('Check if register caught errors', () => {
-    mocked.request.mockRejectedValue({
-      response: {
-        status: 400,
-        data: 'error=err1&errorMessage=Bad+request'
+    mocked.request.mockResolvedValue({
+      status: 400,
+      success: false,
+      data: {
+        error: 'err1'
       }
     })
 
@@ -162,8 +161,7 @@ describe('Przelewy24 main driver', () => {
         status: 400,
         success: false,
         data: {
-          error: 'err1',
-          errorMessage: 'Bad request'
+          error: 'err1'
         }
       }
     })
@@ -172,7 +170,10 @@ describe('Przelewy24 main driver', () => {
   test('Check if verfify respond correctly', async () => {
     mocked.request.mockResolvedValue({
       status: 200,
-      data: 'error=0'
+      success: true,
+      data: {
+        error: 0
+      }
     })
 
     const expectedPayload: Model = new Model({
@@ -188,7 +189,6 @@ describe('Przelewy24 main driver', () => {
     const response = await przelewy.verify(verification)
 
     expect(mocked.request).toBeCalledWith({
-      method: 'POST',
       url: 'https://sandbox.przelewy24.pl/trnVerify',
       data: expectedPayload
     })
@@ -199,10 +199,11 @@ describe('Przelewy24 main driver', () => {
   })
 
   test('Check if verify caught errors', () => {
-    mocked.request.mockRejectedValue({
-      response: {
-        status: 400,
-        data: 'error=err1&errorMessage=Bad+request'
+    mocked.request.mockResolvedValue({
+      status: 400,
+      success: false,
+      data: {
+        error: 'err1'
       }
     })
 
@@ -212,8 +213,7 @@ describe('Przelewy24 main driver', () => {
         status: 400,
         success: false,
         data: {
-          error: 'err1',
-          errorMessage: 'Bad request'
+          error: 'err1'
         }
       }
     })

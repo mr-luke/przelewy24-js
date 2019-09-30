@@ -1,4 +1,6 @@
-coverage
-dist
-node_modules
+/coverage
+/dist
+/live
+/node_modules
 .env
+jestconfig.live.json

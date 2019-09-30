@@ -1,3 +1,4 @@
+import * as qs from 'querystring'
 import { Payload } from './interfaces/models'
 
 /**
@@ -20,10 +21,18 @@ export class Model {
   }
 
   /**
-   * Dump all values to object.
+   * Return data as object.
    */
-  public dump(): Payload {
+  /* istanbul ignore next */
+  public get dataSet(): Payload {
     return this.data
+  }
+
+  /**
+   * Dump all values to query string.
+   */
+  public dump(): string {
+    return qs.stringify(this.data)
   }
 
   /**

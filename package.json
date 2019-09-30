@@ -1,5 +1,5 @@
 {
-  "name": "przelewy24",
+  "name": "@mr-luke/przelewy24",
   "version": "1.0.0",
   "author": "Lukasz Sitnicki <lukasz.sitnicki@gmail.com>",
   "description": "Universal Przelewy24 driver for JS applications.",

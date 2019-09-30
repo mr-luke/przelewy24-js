@@ -47,6 +47,22 @@ describe('Http service tests', () => {
 
   test('Check if error http call respond correctly', () => {
     mocked.request.mockRejectedValue({
+      response: { status: 500, data: 'message=Error+occured' }
+    })
+
+    return expect(
+      Http.request({url: 'test', data: dataSet})
+    ).resolves.toEqual({
+      status: 500,
+      success: false,
+      data: {
+        message: "Error occured"
+      }
+    })
+  })
+
+  test('Check if error http call respond correctly - no data', () => {
+    mocked.request.mockRejectedValue({
       response: { status: 500 }
     })
 

@@ -1,0 +1,17 @@
+{
+  "sessionId": "p24_session_id",
+  "amount": "p24_amount",
+  "description": "p24_description",
+  "email": "p24_email",
+  "client": "p24_client",
+  "address": "p24_address",
+  "zip": "p24_zip",
+  "city": "p24_city",
+  "phone": "p24_phone",
+  "language": "p24_language",
+  "method": "p24_method",
+  "shouldWait": "p24_should_wait",
+  "channel": "p24_channel",
+  "shipping": "p24_shipping",
+  "transferLabel": "p24_transfer_label"
+}

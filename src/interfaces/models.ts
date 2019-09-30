@@ -47,7 +47,7 @@ export interface Response {
  * New transaction interface.
  */
 export interface Transaction {
-  session: string|number
+  sessionId: string|number
   amount: number
   description: string
   email: string
@@ -66,9 +66,16 @@ export interface Transaction {
 }
 
 /**
+ * New transaction interface.
+ */
+export interface TransactionAdapter {
+  map(model: Transaction): Payload[]
+}
+
+/**
  * Przelewy24 verification response interface.
  */
-export interface Verification {
+export interface Verification extends Payload {
   p24_merchant_id: string|number
   p24_pos_id: string|number
   p24_session_id: string|number

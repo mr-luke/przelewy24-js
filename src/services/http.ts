@@ -4,7 +4,11 @@ import { HttpRequest, HttpResponse } from '../interfaces/http'
 import { Payload } from '../interfaces/models'
 
 /**
- * Http service interface.
+ * Http service.
+ *
+ * @author    Łukasz Sitnicki <lukasz.sitnicki@movecloser.pl>
+ * @version   1.0.0
+ * @licence   MIT
  */
 export default class Http {
   /**
@@ -22,7 +26,13 @@ export default class Http {
         }
       })
       .catch(error => {
-        return { status: error.response.status, success: false }
+        const response: HttpResponse = { status: error.response.status, success: false }
+
+        if (Object.prototype.hasOwnProperty.call(error.response, 'data')) {
+          response.data = Http.parseResponse(error.response.data)
+        }
+
+        return response
       })
   }
 

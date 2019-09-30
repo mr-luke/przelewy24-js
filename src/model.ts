@@ -1,5 +1,12 @@
 import { Payload } from './interfaces/models'
 
+/**
+ * Przelewy24 data model.
+ *
+ * @author    Łukasz Sitnicki <lukasz.sitnicki@movecloser.pl>
+ * @version   1.0.0
+ * @licence   MIT
+ */
 export class Model {
   private data: Payload = {}
 

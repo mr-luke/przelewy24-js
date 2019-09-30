@@ -1,12 +1,19 @@
 import * as md5 from 'md5'
 
-import * as signatures from '../signature.json'
+import * as signatures from '../maps/signature.json'
 
 import { Model } from '../model'
 import HasherContract from '../interfaces/hasher'
 import { Payload } from '../interfaces/models'
 import { Target } from '../types/target'
 
+/**
+ * Hasing service - md5.
+ *
+ * @author    Łukasz Sitnicki <lukasz.sitnicki@movecloser.pl>
+ * @version   1.0.0
+ * @licence   MIT
+ */
 export default class Hasher implements HasherContract {
   protected definitions: { [key: string]: string[] }
 

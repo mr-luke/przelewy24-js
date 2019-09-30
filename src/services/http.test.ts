@@ -9,18 +9,16 @@ describe('Http service tests', () => {
     mocked.request.mockResolvedValue({
       status: 200,
       data: 'error=0&param1=test&param2='
-    });
+    })
 
-    Http.request({method: 'POST', url: 'test', data: 'test'}).then(response => {
-      expect(response).toEqual({
-        status: 200,
-        success: true,
-        data: {
-          error: '0',
-          param1: 'test',
-          param2: ''
-        }
-      })
+    return expect(Http.request({method: 'POST', url: 'test', data: 'test'})).resolves.toEqual({
+      status: 200,
+      success: true,
+      data: {
+        error: '0',
+        param1: 'test',
+        param2: ''
+      }
     })
   })
 
@@ -28,30 +26,26 @@ describe('Http service tests', () => {
     mocked.request.mockResolvedValue({
       status: 200,
       data: 'error=err1&errorMessage=Something+went+wrong'
-    });
+    })
 
-    Http.request({method: 'POST', url: 'test', data: 'test'}).then(response => {
-      expect(response).toEqual({
-        status: 200,
-        success: false,
-        data: {
-          error: 'err1',
-          errorMessage: 'Something went wrong'
-        }
-      })
+    return expect(Http.request({method: 'POST', url: 'test', data: 'test'})).resolves.toEqual({
+      status: 200,
+      success: false,
+      data: {
+        error: 'err1',
+        errorMessage: 'Something went wrong'
+      }
     })
   })
 
   test('Check if error http call respond correctly', () => {
     mocked.request.mockRejectedValue({
       response: { status: 500 }
-    });
+    })
 
-    Http.request({method: 'POST', url: 'test', data: 'test'}).then(response => {
-      expect(response).toEqual({
-        status: 500,
-        success: false
-      })
+    return expect(Http.request({method: 'POST', url: 'test', data: 'test'})).resolves.toEqual({
+      status: 500,
+      success: false
     })
   })
 })

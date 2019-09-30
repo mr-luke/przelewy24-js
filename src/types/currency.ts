@@ -6,9 +6,9 @@
  * @licence   MIT
  */
 export enum Currency {
-  PLN,
-  EUR,
-  USD,
-  GBP,
-  CZK
+  PLN = 'PLN',
+  EUR = 'EUR',
+  USD = 'USD',
+  GBP = 'GBP',
+  CZK = 'CZK'
 }

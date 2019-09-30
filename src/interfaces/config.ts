@@ -8,7 +8,7 @@
 export interface Config {
   live: boolean
   merchant: any
-  pos: any|null
+  pos?: any
   currency: string
   country: string
   salt: string

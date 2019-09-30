@@ -7,6 +7,7 @@ import { Model } from './model'
 import { Payload } from './interfaces/models'
 import { Status } from './types/status'
 import { Target } from './types/target'
+import { Transaction as Adapter } from './adapters'
 
 /**
  * Przelewy24 driver.
@@ -46,7 +47,7 @@ export default class Przelewy24 implements Contract {
       .set('p24_url_return', callbacks.returnUri)
       .set('p24_url_status', callbacks.statusUri)
 
-    for (const [key, value] of Object.entries(transaction)) {
+    for (const [key, value] of Object.entries(Adapter.map(transaction))) {
       payload.set(key, value)
     }
 
@@ -57,7 +58,10 @@ export default class Przelewy24 implements Contract {
     if (!registered.success) {
       // Throw in case of fail to move execution to catch block
       // of Promis callbacks.
-      throw registered
+      throw {
+        status: Status.Fail,
+        errors: registered
+      }
     }
 
     return {
@@ -81,7 +85,10 @@ export default class Przelewy24 implements Contract {
     if (!response.success) {
       // Throw in case of fail to move execution to catch block
       // of Promis callbacks.
-      throw response
+      throw {
+        status: Status.Fail,
+        errors: response
+      }
     }
 
     return {
@@ -93,13 +100,13 @@ export default class Przelewy24 implements Contract {
    * Verify transaction in P24 system.
    */
   public async verify(p24Response: Verification): Promise<Response> {
-    const target = this.version.getTarget(Target.register, this.live)
+    const target = this.version.getTarget(Target.verify, this.live)
 
     delete p24Response.p24_method
     delete p24Response.p24_statement
     delete p24Response.p24_sign
 
-    const payload = (new Model()).setMany(this.data)
+    const payload = new Model(p24Response)
     payload.set('p24_sign', this.hasher.getSignature(payload, Target.verify, this.salt))
 
     const response = await this.makeCall(payload, target)
@@ -107,7 +114,10 @@ export default class Przelewy24 implements Contract {
     if (!response.success) {
       // Throw in case of fail to move execution to catch block
       // of Promis callbacks.
-      throw response
+      throw {
+        status: Status.Fail,
+        errors: response
+      }
     }
 
     return {
@@ -131,7 +141,7 @@ export default class Przelewy24 implements Contract {
     if (Object.prototype.hasOwnProperty.call(config, 'pos') && config.pos !== null) {
       this.data.p24_pos_id = config.pos
     } else {
-      this.data.p24_pos_id = this.data.merchant
+      this.data.p24_pos_id = config.merchant
     }
 
     this.data.p24_api_version = this.version.getVersion()

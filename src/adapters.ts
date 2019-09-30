@@ -22,7 +22,7 @@ export class Transaction {
       if (Array.isArray(value)) {
         for (let i = 0; i < value.length; i++) {
           for (const ikey of Object.keys(value[i])) {
-            mapped[`${iMap[ikey]}${i+1}`] = value[i][ikey]
+            mapped[`${iMap[ikey]}${i + 1}`] = value[i][ikey]
           }
         }
       } else {

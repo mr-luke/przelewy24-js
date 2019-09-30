@@ -56,7 +56,7 @@ describe('Http service tests', () => {
       status: 500,
       success: false,
       data: {
-        message: "Error occured"
+        message: 'Error occured'
       }
     })
   })
